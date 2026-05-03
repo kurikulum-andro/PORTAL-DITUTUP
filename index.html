@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Portal Ditutup | SMP Negeri 247 Jakarta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: radial-gradient(circle at 20% 30%, #0a0a1a, #050510);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Animated gradient background */
+        .animated-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(45deg, rgba(255,80,40,0.02) 0px, rgba(255,80,40,0.02) 2px, transparent 2px, transparent 8px);
+            pointer-events: none;
+        }
+
+        /* Floating particles */
+        .particle-field {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .particle {
+            position: absolute;
+            background: rgba(255, 100, 50, 0.3);
+            border-radius: 50%;
+            animation: floatParticle 8s infinite ease-in-out;
+        }
+        @keyframes floatParticle {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.6; }
+            80% { opacity: 0.3; }
+            100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* PULSE EFFECT on background */
+        @keyframes bgPulse {
+            0% { background: radial-gradient(circle at 20% 30%, #0a0a1a, #050510); }
+            100% { background: radial-gradient(circle at 80% 70%, #0f0f2a, #030310); }
+        }
+        body {
+            animation: bgPulse 6s infinite alternate;
+        }
+
+        /* Main Card */
+        .portal-card {
+            position: relative;
+            z-index: 20;
+            max-width: 550px;
+            width: 90%;
+            background: rgba(20, 20, 40, 0.75);
+            backdrop-filter: blur(16px);
+            border-radius: 3rem;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            border: 1px solid rgba(255, 100, 50, 0.4);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,120,50,0.2);
+            animation: cardGlow 2.5s infinite alternate;
+            transition: transform 0.3s ease;
+        }
+        @keyframes cardGlow {
+            0% { box-shadow: 0 25px 45px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,100,50,0.2); border-color: rgba(255,100,50,0.4);}
+            100% { box-shadow: 0 35px 55px rgba(255,80,40,0.25), 0 0 0 3px rgba(255,120,50,0.6); border-color: rgba(255,120,50,0.8);}
+        }
+        .portal-card:hover {
+            transform: scale(1.01);
+        }
+
+        /* Logo SMPN 247 Jakarta */
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+            animation: logoPulse 2s infinite;
+        }
+        @keyframes logoPulse {
+            0% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.9; }
+        }
+        .logo-circle {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(145deg, #1e4a6e, #0e3e4e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(255,100,50,0.5);
+            border: 2px solid rgba(255,120,50,0.6);
+        }
+        .logo-circle i {
+            font-size: 4rem;
+            color: #ffd966;
+        }
+        .school-name {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #ffd966;
+            letter-spacing: 2px;
+        }
+
+        /* Warning Icon */
+        .warning-icon {
+            font-size: 4.5rem;
+            margin-bottom: 0.5rem;
+            animation: warningPulse 1.2s infinite, shake 2s infinite;
+            display: inline-block;
+        }
+        @keyframes warningPulse {
+            0% { text-shadow: 0 0 0 rgba(255,80,40,0); transform: scale(1);}
+            50% { text-shadow: 0 0 20px rgba(255,80,40,0.8); transform: scale(1.08);}
+            100% { text-shadow: 0 0 0 rgba(255,80,40,0); transform: scale(1);}
+        }
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            15% { transform: rotate(8deg); }
+            30% { transform: rotate(-8deg); }
+            45% { transform: rotate(4deg); }
+            60% { transform: rotate(-4deg); }
+            75% { transform: rotate(2deg); }
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffb347, #ff6b3d);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 0.5rem 0;
+            letter-spacing: -0.3px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: rgba(255, 80, 50, 0.2);
+            backdrop-filter: blur(4px);
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #ff9966;
+            border: 1px solid rgba(255,100,50,0.5);
+            margin: 0.8rem 0;
+        }
+
+        /* DRAMATIC CLOCK */
+        .clock-container {
+            background: rgba(0,0,0,0.6);
+            border-radius: 2rem;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            border: 1px solid rgba(255,140,70,0.4);
+            backdrop-filter: blur(4px);
+            position: relative;
+            overflow: hidden;
+        }
+        .clock-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,140,70,0.2), transparent);
+            animation: scanline 4s infinite;
+        }
+        @keyframes scanline {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        .time-block {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        .time-number {
+            font-size: 2.8rem;
+            font-weight: 800;
+            font-family: monospace;
+            background: linear-gradient(145deg, #fff2e0, #ffccaa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 4px;
+            text-shadow: 0 0 10px rgba(255,100,50,0.5);
+        }
+        .time-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: #ffaa77;
+            letter-spacing: 2px;
+        }
+        .separator {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ff6b3d;
+            animation: blinkSeparator 1s infinite;
+        }
+        @keyframes blinkSeparator {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Dramatic countdown text */
+        .countdown-text {
+            margin: 0.5rem 0 0;
+            font-size: 0.7rem;
+            color: #ffaa77;
+            letter-spacing: 2px;
+        }
+
+        .maintenance-message {
+            background: rgba(0,0,0,0.5);
+            padding: 1rem;
+            border-radius: 1.5rem;
+            margin: 1.2rem 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #ffddbb;
+            border: 1px solid rgba(255,140,70,0.2);
+        }
+
+        .tagline {
+            font-size: 0.9rem;
+            font-weight: 600;
+            background: rgba(255, 100, 50, 0.15);
+            display: inline-block;
+            padding: 0.6rem 1.5rem;
+            border-radius: 2rem;
+            margin: 0.8rem 0;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,120,50,0.4);
+            letter-spacing: 1px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,200,0.1);
+            border-radius: 10px;
+            margin: 1.5rem 0 1rem;
+            overflow: hidden;
+        }
+        .progress-fill {
+            width: 68%;
+            height: 100%;
+            background: linear-gradient(90deg, #ff884d, #ff4d2e);
+            border-radius: 10px;
+            animation: loadingProgress 2.8s ease infinite alternate;
+        }
+        @keyframes loadingProgress {
+            0% { width: 35%; opacity: 0.7;}
+            100% { width: 85%; opacity: 1;}
+        }
+
+        .contact {
+            font-size: 0.7rem;
+            color: #ffb280;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .blink-text {
+            animation: blink 1.4s step-start infinite;
+            font-weight: bold;
+        }
+        @keyframes blink {
+            50% { opacity: 0.3; }
+        }
+
+        footer {
+            margin-top: 1.5rem;
+            font-size: 0.6rem;
+            color: #dd9966;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 520px) {
+            .portal-card { padding: 1.5rem; }
+            .time-number { font-size: 2rem; letter-spacing: 2px; }
+            .separator { font-size: 1.5rem; }
+            .logo-circle { width: 70px; height: 70px; }
+            .logo-circle i { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="animated-bg"></div>
+<div class="particle-field" id="particleField"></div>
+
+<div class="portal-card">
+    <!-- Logo SMPN 247 Jakarta -->
+    <div class="logo-container">
+        <div class="logo-circle">
+            <i class="fas fa-school"></i>
+        </div>
+    </div>
+    <div class="school-name">SMP NEGERI 247 JAKARTA</div>
+
+    <!-- Warning Icon -->
+    <div class="warning-icon">
+        <i class="fas fa-triangle-exclamation"></i>
+    </div>
+    
+    <h1>PORTAL DITUTUP SEMENTARA</h1>
+    <div class="status-badge">
+        <i class="fas fa-tools"></i> MAINTENANCE MODE • AKTIF
+    </div>
+    
+    <!-- DRAMATIC LIVE CLOCK -->
+    <div class="clock-container">
+        <div class="time-block">
+            <div class="time-number" id="hours">00</div>
+            <div class="time-label">Jam</div>
+        </div>
+        <div class="separator">:</div>
+        <div class="time-block">
+            <div class="time-number" id="minutes">00</div>
+            <div class="time-label">Menit</div>
+        </div>
+        <div class="separator">:</div>
+        <div class="time-block">
+            <div class="time-number" id="seconds">00</div>
+            <div class="time-label">Detik</div>
+        </div>
+    </div>
+    <div class="countdown-text">
+        <i class="fas fa-hourglass-half"></i> WAKTU DITUTUP: <span id="closeDateTime">04 Mei 2026, 06:45 WIB</span>
+    </div>
+    
+    <div class="maintenance-message">
+        <i class="fas fa-code-branch"></i> Sistem sedang dalam pemeliharaan terjadwal. <br>
+        Tim teknologi sedang melakukan optimalisasi server dan keamanan data. <br>
+        <span class="blink-text">⏳ Diperkirakan selesai dalam beberapa jam.</span>
+    </div>
+    
+    <!-- Tagline -->
+    <div class="tagline">
+        <i class="fas fa-school"></i> "Terampil, Berprestasi, Berkarakter"
+    </div>
+    
+    <div class="progress-bar">
+        <div class="progress-fill"></div>
+    </div>
+    
+    <div class="contact">
+        <i class="fas fa-envelope"></i> humas@smpn247.jkt.sch.id
+        <span>|</span>
+        <i class="fas fa-phone-alt"></i> (021) 7486 1234
+    </div>
+    
+    <footer>
+        <span>© Dinas Pendidikan DKI Jakarta • 2026</span>
+        <span><i class="fas fa-shield-alt"></i> Pemeliharaan berkala</span>
+    </footer>
+</div>
+
+<script>
+    (function() {
+        // =============== LIVE CLOCK DRAMATIS ===============
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            
+            document.getElementById('hours').innerText = hours;
+            document.getElementById('minutes').innerText = minutes;
+            document.getElementById('seconds').innerText = seconds;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+        
+        // Set close date display
+        const closeDateSpan = document.getElementById('closeDateTime');
+        if (closeDateSpan) {
+            closeDateSpan.innerText = '04 Mei 2026, 06:45 WIB';
+        }
+        
+        // =============== MEMBUAT PARTIKEL ANIMASI ===============
+        function createParticles() {
+            const container = document.getElementById('particleField');
+            if (!container) return;
+            const particleCount = 80;
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                const size = Math.random() * 8 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.animationDuration = `${Math.random() * 10 + 6}s`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                particle.style.background = `rgba(255, ${Math.floor(80 + Math.random() * 70)}, 40, ${Math.random() * 0.4 + 0.2})`;
+                particle.style.boxShadow = `0 0 6px rgba(255,80,40,0.5)`;
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+        
+        // Tambahkan partikel baru secara periodik
+        setInterval(() => {
+            const container = document.getElementById('particleField');
+            if (container && container.children.length < 120) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                const size = Math.random() * 7 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.animationDuration = `${Math.random() * 12 + 5}s`;
+                particle.style.background = `rgba(255, ${Math.floor(90 + Math.random() * 70)}, 50, 0.45)`;
+                container.appendChild(particle);
+                setTimeout(() => {
+                    if (particle && particle.remove) particle.remove();
+                }, 11000);
+            }
+        }, 3000);
+        
+        // =============== EFEK INTERAKTIF HALUS ===============
+        const card = document.querySelector('.portal-card');
+        if (card) {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 30;
+                const rotateY = (centerX - x) / 30;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.01)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
+            });
+        }
+        
+        // =============== GLOW EFEK PADA TAGLINE ===============
+        const tagline = document.querySelector('.tagline');
+        if (tagline) {
+            setInterval(() => {
+                tagline.style.textShadow = `0 0 ${Math.sin(Date.now() / 800) * 6 + 4}px #ff7b33`;
+            }, 200);
+        }
+        
+        // =============== PROGRESS BAR DINAMIS ===============
+        const progressFill = document.querySelector('.progress-fill');
+        if (progressFill) {
+            let widthVal = 58;
+            setInterval(() => {
+                const change = Math.sin(Date.now() / 1800) * 7;
+                let newWidth = 58 + change;
+                if (newWidth > 88) newWidth = 88;
+                if (newWidth < 48) newWidth = 52;
+                progressFill.style.width = `${newWidth}%`;
+            }, 1500);
+        }
+        
+        // =============== JUGA TAMBAHKAN COUNTDOWN SAMPAI PENUTUPAN (DRAMATIS) ===============
+        function updateCountdown() {
+            const targetDate = new Date(2026, 4, 4, 6, 45, 0); // 04 Mei 2026 06:45:00
+            const now = new Date();
+            const diff = targetDate - now;
+            
+            if (diff <= 0) {
+                // Jika sudah melewati tanggal, bisa tampilkan pesan berbeda
+                if (document.querySelector('.countdown-text')) {
+                    document.querySelector('.countdown-text').innerHTML = '<i class="fas fa-ban"></i> PORTAL TELAH DITUTUP PERMANEN';
+                }
+                return;
+            }
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (86400000)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (3600000)) / (1000 * 60));
+            const seconds = Math.floor((diff % (60000)) / 1000);
+            
+            // Tampilkan di console saja, tidak mengganggu tampilan utama
+            // Bisa juga di tampilkan di pojok jika perlu
+            const countdownMsg = `${days} hari ${hours} jam ${minutes} menit ${seconds} detik`;
+            console.log(`⏰ Portal ditutup setelah: ${countdownMsg}`);
+        }
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+        
+        // =============== EFEK SUARA PERINGATAN (jika diperlukan, bisa diaktifkan) ===============
+        // Uncomment jika ingin suara dramatis saat halaman dimuat
+        /*
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            oscillator.frequency.value = 220;
+            gainNode.gain.value = 0.15;
+            oscillator.start();
+            gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 1.5);
+            oscillator.stop(audioCtx.currentTime + 1.5);
+        } catch(e) {}
+        */
+    })();
+</script>
+</body>
+</html>
