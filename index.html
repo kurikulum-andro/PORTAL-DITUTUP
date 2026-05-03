@@ -24,7 +24,6 @@
             justify-content: center;
         }
 
-        /* Animated gradient background */
         .animated-bg {
             position: absolute;
             width: 100%;
@@ -33,7 +32,6 @@
             pointer-events: none;
         }
 
-        /* Floating particles */
         .particle-field {
             position: absolute;
             width: 100%;
@@ -54,7 +52,6 @@
             100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
         }
 
-        /* PULSE EFFECT on background */
         @keyframes bgPulse {
             0% { background: radial-gradient(circle at 20% 30%, #0a0a1a, #050510); }
             100% { background: radial-gradient(circle at 80% 70%, #0f0f2a, #030310); }
@@ -63,7 +60,6 @@
             animation: bgPulse 6s infinite alternate;
         }
 
-        /* Main Card */
         .portal-card {
             position: relative;
             z-index: 20;
@@ -87,7 +83,6 @@
             transform: scale(1.01);
         }
 
-        /* Logo SMPN 247 Jakarta */
         .logo-container {
             display: flex;
             justify-content: center;
@@ -122,7 +117,6 @@
             letter-spacing: 2px;
         }
 
-        /* Warning Icon */
         .warning-icon {
             font-size: 4.5rem;
             margin-bottom: 0.5rem;
@@ -167,7 +161,6 @@
             margin: 0.8rem 0;
         }
 
-        /* DRAMATIC CLOCK */
         .clock-container {
             background: rgba(0,0,0,0.6);
             border-radius: 2rem;
@@ -230,7 +223,6 @@
             50% { opacity: 0.3; }
         }
 
-        /* Dramatic countdown text */
         .countdown-text {
             margin: 0.5rem 0 0;
             font-size: 0.7rem;
@@ -311,12 +303,44 @@
             flex-wrap: wrap;
         }
 
+        /* Tombol kontrol suara */
+        .sound-control {
+            position: fixed;
+            bottom: 15px;
+            left: 15px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            padding: 8px 15px;
+            border-radius: 30px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            border: 1px solid rgba(255,120,50,0.5);
+            transition: all 0.2s;
+        }
+        .sound-control:hover {
+            background: rgba(255,80,40,0.4);
+            transform: scale(1.02);
+        }
+        .sound-control i {
+            color: #ffaa77;
+            font-size: 1rem;
+        }
+        .sound-control span {
+            font-size: 0.7rem;
+            color: #ffaa77;
+        }
+
         @media (max-width: 520px) {
             .portal-card { padding: 1.5rem; }
             .time-number { font-size: 2rem; letter-spacing: 2px; }
             .separator { font-size: 1.5rem; }
             .logo-circle { width: 70px; height: 70px; }
             .logo-circle i { font-size: 2.5rem; }
+            .sound-control { padding: 5px 10px; }
+            .sound-control span { font-size: 0.6rem; }
         }
     </style>
 </head>
@@ -326,7 +350,6 @@
 <div class="particle-field" id="particleField"></div>
 
 <div class="portal-card">
-    <!-- Logo SMPN 247 Jakarta -->
     <div class="logo-container">
         <div class="logo-circle">
             <i class="fas fa-school"></i>
@@ -334,7 +357,6 @@
     </div>
     <div class="school-name">SMP NEGERI 247 JAKARTA</div>
 
-    <!-- Warning Icon -->
     <div class="warning-icon">
         <i class="fas fa-triangle-exclamation"></i>
     </div>
@@ -344,7 +366,6 @@
         <i class="fas fa-tools"></i> MAINTENANCE MODE • AKTIF
     </div>
     
-    <!-- DRAMATIC LIVE CLOCK -->
     <div class="clock-container">
         <div class="time-block">
             <div class="time-number" id="hours">00</div>
@@ -371,7 +392,6 @@
         <span class="blink-text">⏳ Diperkirakan selesai dalam beberapa jam.</span>
     </div>
     
-    <!-- Tagline -->
     <div class="tagline">
         <i class="fas fa-school"></i> "Terampil, Berprestasi, Berkarakter"
     </div>
@@ -392,8 +412,190 @@
     </footer>
 </div>
 
+<!-- Tombol kontrol suara -->
+<div class="sound-control" id="soundControl">
+    <i class="fas fa-volume-up" id="soundIcon"></i>
+    <span id="soundText">Suara Darurat ON</span>
+</div>
+
 <script>
     (function() {
+        // =============== SUARA DARURAT PANGGILAN (SIRENE DARURAT PANJANG) ===============
+        let audioContext = null;
+        let isSoundPlaying = false;
+        let currentOscillator1 = null;
+        let currentOscillator2 = null;
+        let currentGain = null;
+        let soundEnabled = true;
+        
+        // Fungsi untuk membuat suara darurat panjang seperti sirine polisi/ambulance
+        function startEmergencySound() {
+            if (!soundEnabled) return;
+            if (isSoundPlaying) return;
+            
+            try {
+                // Matikan suara yang sedang berjalan jika ada
+                stopEmergencySound();
+                
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                currentGain = audioContext.createGain();
+                currentGain.connect(audioContext.destination);
+                currentGain.gain.value = 0.35; // Volume tidak terlalu keras tapi jelas
+                
+                // SIRENE DARURAT: suara naik turun seperti sirine
+                let startTime = audioContext.currentTime;
+                let frequency1 = 440; // A4
+                let frequency2 = 880; // A5
+                let duration = 60; // durasi panjang (60 detik)
+                
+                function createSirenOscillator(freq, startOffset) {
+                    const osc = audioContext.createOscillator();
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    osc.connect(currentGain);
+                    osc.start(startTime + startOffset);
+                    return osc;
+                }
+                
+                // Buat dua suara sirine berseling
+                currentOscillator1 = createSirenOscillator(440, 0);
+                currentOscillator2 = createSirenOscillator(660, 0.15);
+                
+                // Efek modulasi frekuensi untuk sirine (naik turun)
+                const now = audioContext.currentTime;
+                const modOsc = audioContext.createOscillator();
+                const modGain = audioContext.createGain();
+                modOsc.type = 'sine';
+                modOsc.frequency.value = 3.5; // frekuensi modulasi
+                modGain.gain.value = 80;
+                modOsc.connect(modGain);
+                modGain.connect(currentOscillator1.frequency);
+                modGain.connect(currentOscillator2.frequency);
+                modOsc.start();
+                
+                // Suara ketiga: efek bass gemuruh darurat
+                const bassOsc = audioContext.createOscillator();
+                const bassGain = audioContext.createGain();
+                bassOsc.type = 'sawtooth';
+                bassOsc.frequency.value = 110;
+                bassGain.gain.value = 0.15;
+                bassOsc.connect(bassGain);
+                bassGain.connect(audioContext.destination);
+                bassOsc.start();
+                
+                // Suara keempat: efek detak jantung cepat (dramatis)
+                const beatOsc = audioContext.createOscillator();
+                const beatGain = audioContext.createGain();
+                beatOsc.type = 'square';
+                beatOsc.frequency.value = 2;
+                beatGain.gain.value = 0.1;
+                beatOsc.connect(beatGain);
+                beatGain.connect(audioContext.destination);
+                beatOsc.start();
+                
+                // Set timeout untuk menghentikan suara setelah durasi panjang
+                setTimeout(() => {
+                    if (audioContext) {
+                        try {
+                            if (currentOscillator1) currentOscillator1.stop();
+                            if (currentOscillator2) currentOscillator2.stop();
+                            modOsc.stop();
+                            bassOsc.stop();
+                            beatOsc.stop();
+                            if (currentGain) currentGain.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 1);
+                        } catch(e) {}
+                    }
+                    isSoundPlaying = false;
+                }, duration * 1000);
+                
+                isSoundPlaying = true;
+                console.log('🔊 Suara darurat panjang dimainkan');
+                
+                // Simpan referensi untuk dihentikan nanti
+                window._emergencyModOsc = modOsc;
+                window._emergencyBassOsc = bassOsc;
+                window._emergencyBeatOsc = beatOsc;
+                
+            } catch(e) {
+                console.log('⚠️ Gagal memutar suara darurat:', e);
+            }
+        }
+        
+        function stopEmergencySound() {
+            try {
+                if (currentOscillator1) {
+                    currentOscillator1.stop();
+                    currentOscillator1 = null;
+                }
+                if (currentOscillator2) {
+                    currentOscillator2.stop();
+                    currentOscillator2 = null;
+                }
+                if (window._emergencyModOsc) {
+                    window._emergencyModOsc.stop();
+                    window._emergencyModOsc = null;
+                }
+                if (window._emergencyBassOsc) {
+                    window._emergencyBassOsc.stop();
+                    window._emergencyBassOsc = null;
+                }
+                if (window._emergencyBeatOsc) {
+                    window._emergencyBeatOsc.stop();
+                    window._emergencyBeatOsc = null;
+                }
+                if (currentGain) {
+                    currentGain.disconnect();
+                    currentGain = null;
+                }
+                if (audioContext) {
+                    audioContext.close().catch(() => {});
+                    audioContext = null;
+                }
+            } catch(e) {}
+            isSoundPlaying = false;
+        }
+        
+        // Fungsi untuk toggle suara (ON/OFF)
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const soundIcon = document.getElementById('soundIcon');
+            const soundText = document.getElementById('soundText');
+            
+            if (soundEnabled) {
+                soundIcon.className = 'fas fa-volume-up';
+                soundText.innerText = 'Suara Darurat ON';
+                startEmergencySound();
+            } else {
+                soundIcon.className = 'fas fa-volume-mute';
+                soundText.innerText = 'Suara Darurat OFF';
+                stopEmergencySound();
+            }
+        }
+        
+        // Event listener tombol kontrol suara
+        const soundControl = document.getElementById('soundControl');
+        if (soundControl) {
+            soundControl.addEventListener('click', toggleSound);
+        }
+        
+        // Mulai suara darurat panjang saat halaman dimuat (otomatis)
+        setTimeout(() => {
+            startEmergencySound();
+        }, 500);
+        
+        // Juga putar suara setiap 45 detik jika masih aktif
+        let soundInterval = setInterval(() => {
+            if (soundEnabled && !isSoundPlaying) {
+                startEmergencySound();
+            }
+        }, 45000);
+        
+        // Hentikan interval jika halaman ditutup
+        window.addEventListener('beforeunload', () => {
+            if (soundInterval) clearInterval(soundInterval);
+            stopEmergencySound();
+        });
+        
         // =============== LIVE CLOCK DRAMATIS ===============
         function updateClock() {
             const now = new Date();
@@ -404,6 +606,14 @@
             document.getElementById('hours').innerText = hours;
             document.getElementById('minutes').innerText = minutes;
             document.getElementById('seconds').innerText = seconds;
+            
+            const clockContainer = document.querySelector('.clock-container');
+            if (clockContainer && seconds % 10 === 0) {
+                clockContainer.style.transform = 'scale(1.01)';
+                setTimeout(() => {
+                    clockContainer.style.transform = 'scale(1)';
+                }, 100);
+            }
         }
         updateClock();
         setInterval(updateClock, 1000);
@@ -435,7 +645,6 @@
         }
         createParticles();
         
-        // Tambahkan partikel baru secara periodik
         setInterval(() => {
             const container = document.getElementById('particleField');
             if (container && container.children.length < 120) {
@@ -454,7 +663,7 @@
             }
         }, 3000);
         
-        // =============== EFEK INTERAKTIF HALUS ===============
+        // =============== EFEK INTERAKTIF ===============
         const card = document.querySelector('.portal-card');
         if (card) {
             card.addEventListener('mousemove', (e) => {
@@ -472,7 +681,7 @@
             });
         }
         
-        // =============== GLOW EFEK PADA TAGLINE ===============
+        // =============== GLOW EFEK ===============
         const tagline = document.querySelector('.tagline');
         if (tagline) {
             setInterval(() => {
@@ -483,7 +692,6 @@
         // =============== PROGRESS BAR DINAMIS ===============
         const progressFill = document.querySelector('.progress-fill');
         if (progressFill) {
-            let widthVal = 58;
             setInterval(() => {
                 const change = Math.sin(Date.now() / 1800) * 7;
                 let newWidth = 58 + change;
@@ -493,14 +701,13 @@
             }, 1500);
         }
         
-        // =============== JUGA TAMBAHKAN COUNTDOWN SAMPAI PENUTUPAN (DRAMATIS) ===============
+        // =============== COUNTDOWN SAMPAI PENUTUPAN ===============
         function updateCountdown() {
-            const targetDate = new Date(2026, 4, 4, 6, 45, 0); // 04 Mei 2026 06:45:00
+            const targetDate = new Date(2026, 4, 4, 6, 45, 0);
             const now = new Date();
             const diff = targetDate - now;
             
             if (diff <= 0) {
-                // Jika sudah melewati tanggal, bisa tampilkan pesan berbeda
                 if (document.querySelector('.countdown-text')) {
                     document.querySelector('.countdown-text').innerHTML = '<i class="fas fa-ban"></i> PORTAL TELAH DITUTUP PERMANEN';
                 }
@@ -510,32 +717,14 @@
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((diff % (86400000)) / (1000 * 60 * 60));
             const minutes = Math.floor((diff % (3600000)) / (1000 * 60));
-            const seconds = Math.floor((diff % (60000)) / 1000);
             
-            // Tampilkan di console saja, tidak mengganggu tampilan utama
-            // Bisa juga di tampilkan di pojok jika perlu
-            const countdownMsg = `${days} hari ${hours} jam ${minutes} menit ${seconds} detik`;
-            console.log(`⏰ Portal ditutup setelah: ${countdownMsg}`);
+            const countdownEl = document.querySelector('.countdown-text');
+            if (countdownEl && days === 0 && hours < 24) {
+                countdownEl.innerHTML = `<i class="fas fa-hourglass-end"></i> ⚠️ PORTAL AKAN DITUTUP DALAM ${hours} JAM ${minutes} MENIT ⚠️`;
+            }
         }
         updateCountdown();
         setInterval(updateCountdown, 1000);
-        
-        // =============== EFEK SUARA PERINGATAN (jika diperlukan, bisa diaktifkan) ===============
-        // Uncomment jika ingin suara dramatis saat halaman dimuat
-        /*
-        try {
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            oscillator.frequency.value = 220;
-            gainNode.gain.value = 0.15;
-            oscillator.start();
-            gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 1.5);
-            oscillator.stop(audioCtx.currentTime + 1.5);
-        } catch(e) {}
-        */
     })();
 </script>
 </body>
